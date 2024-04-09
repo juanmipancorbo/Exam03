@@ -6,7 +6,7 @@
 /*   By: jpancorb <jpancorb@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 20:24:21 by jpancorb          #+#    #+#             */
-/*   Updated: 2024/04/09 20:29:25 by jpancorb         ###   ########.fr       */
+/*   Updated: 2024/04/09 21:52:13 by jpancorb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,7 @@ char	*ft_strjoin(char *s1, char const *s2)
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
 	join = malloc((s1_len + s2_len + 1));
-	if (!s1 || !s2)
-		return (NULL);
-	if (!join)
+	if (!s1 || !s2 || !join)
 		return (NULL);
 	ft_strcpy(join, s1);
 	ft_strcpy((join + s1_len), s2);
@@ -88,7 +86,6 @@ char	*get_next_line(int fd)
 	}
 	if (ft_strlen(line) == 0)
 		return (free(line), NULL);
-
 	if (newline != NULL)
 	{
 		to_copy = newline - line + 1;
