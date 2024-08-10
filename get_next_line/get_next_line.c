@@ -3,21 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jpancorb <jpancorb@student.42barcel>       +#+  +:+       +#+        */
+/*   By: jpancorb < jpancorb@student.42barcelona    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 20:24:21 by jpancorb          #+#    #+#             */
-/*   Updated: 2024/04/09 21:52:13 by jpancorb         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:10:28 by jpancorb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <fcntl.h>
+#include <stdio.h> 
 
 char	*ft_strchr(char *s, int c)
 {
 	while (*s)
 	{
-		if (*s == (char)c)
-			return ((char *)s);
+		if (*s == c)
+			return (s);
 		s++;
 	}
 	return (NULL);
@@ -74,28 +76,48 @@ char	*get_next_line(int fd)
 {
 	static char	buf[BUFFER_SIZE + 1];
 	char		*line;
-	char		*newline;
-	int			countread;
-	int			to_copy;
+	char		*new_line;
+	int			bytes_read;
+	int			bytes_to_copy;
 
 	line = ft_strdup(buf);
-	while (!(newline = ft_strchr(line, '\n')) && (countread = read(fd, buf, BUFFER_SIZE)))
+	while (!(new_line = ft_strchr(line, '\n')) && (bytes_read = read(fd, buf, BUFFER_SIZE)))
 	{
-		buf[countread] = '\0';
+		buf[bytes_read] = '\0';
 		line = ft_strjoin(line, buf);
 	}
 	if (ft_strlen(line) == 0)
 		return (free(line), NULL);
-	if (newline != NULL)
+	if (new_line != NULL)
 	{
-		to_copy = newline - line + 1;
-		ft_strcpy(buf, newline + 1);
+		bytes_to_copy = new_line - line + 1;
+		ft_strcpy(buf, new_line + 1);
 	}
 	else
 	{
-		to_copy = ft_strlen(line);
+		bytes_to_copy = ft_strlen(line);
 		buf[0] = '\0';
 	}
-	line[to_copy] = '\0';
+	line[bytes_to_copy] = '\0';
 	return (line);
+}
+
+int	main(void)
+{
+	int	fd;
+	char *line;
+
+	fd = open("example.txt", O_RDONLY);
+	if (fd < 0)
+	{
+		perror("error al abrir el archivo");
+		return (1);
+	}
+	while ((line = get_next_line(fd)))
+	{
+		printf("%s", line);
+		free(line);
+	}
+	close(fd);
+	return (0);
 }
