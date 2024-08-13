@@ -6,7 +6,7 @@
 /*   By: jpancorb < jpancorb@student.42barcelona    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 20:24:21 by jpancorb          #+#    #+#             */
-/*   Updated: 2024/08/10 20:10:28 by jpancorb         ###   ########.fr       */
+/*   Updated: 2024/08/13 20:00:07 by jpancorb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,14 @@ void	ft_strcpy(char *dst, const char *src)
 char	*ft_strdup(const char *src)
 {
 	size_t	len;
-	char	*dst;
+	char	*ret;
 
 	len = ft_strlen(src) + 1;
-	dst = malloc(len);
-	if (dst == NULL)
+	ret = malloc(len);
+	if (ret == NULL)
 		return (NULL);
-	ft_strcpy(dst, src);
-	return (dst);
+	ft_strcpy(ret, src);
+	return (ret);
 }
 
 char	*ft_strjoin(char *s1, char const *s2)
@@ -77,28 +77,28 @@ char	*get_next_line(int fd)
 	static char	buf[BUFFER_SIZE + 1];
 	char		*line;
 	char		*new_line;
-	int			bytes_read;
-	int			bytes_to_copy;
+	int			count_read;
+	int			to_copy;
 
 	line = ft_strdup(buf);
-	while (!(new_line = ft_strchr(line, '\n')) && (bytes_read = read(fd, buf, BUFFER_SIZE)))
+	while (!(new_line = ft_strchr(line, '\n')) && (count_read = read(fd, buf, BUFFER_SIZE)))
 	{
-		buf[bytes_read] = '\0';
+		buf[count_read] = '\0';
 		line = ft_strjoin(line, buf);
 	}
 	if (ft_strlen(line) == 0)
 		return (free(line), NULL);
 	if (new_line != NULL)
 	{
-		bytes_to_copy = new_line - line + 1;
+		to_copy = new_line - line + 1;
 		ft_strcpy(buf, new_line + 1);
 	}
 	else
 	{
-		bytes_to_copy = ft_strlen(line);
+		to_copy = ft_strlen(line);
 		buf[0] = '\0';
 	}
-	line[bytes_to_copy] = '\0';
+	line[to_copy] = '\0';
 	return (line);
 }
 
